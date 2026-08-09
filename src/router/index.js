@@ -6,6 +6,7 @@ import TaskDetailsPage from '@/pages/TaskDetailsPage.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import LoginPage from '@/pages/LoginPage.vue'
 import { useAuthStore } from '@/stores/auth'
+import TaskForm from '@/components/task/TaskForm.vue'
 
 const routes = [
     {
@@ -26,7 +27,12 @@ const routes = [
                 path: 'tasks/:id',
                 name: 'task-details',
                 component: TaskDetailsPage,
-            }
+            },
+            {
+                path: 'tasks/create',
+                name: 'task-create',
+                component: TaskForm,
+            },
         ],
     },
     {

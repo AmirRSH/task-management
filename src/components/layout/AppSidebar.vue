@@ -1,4 +1,13 @@
 <script setup>
+defineProps({
+    modelValue: {
+        type: Boolean,
+        default: true,
+    },
+})
+
+defineEmits(['update:modelValue'])
+
 const navigationItems = [
     {
         title: 'Dashboard',
@@ -14,10 +23,16 @@ const navigationItems = [
 </script>
 
 <template>
-    <v-navigation-drawer>
+    <v-navigation-drawer
+        :model-value="modelValue"
+        :temporary="$vuetify.display.mdAndDown"
+        :permanent="$vuetify.display.lgAndUp"
+        @update:model-value="$emit('update:modelValue', $event)"
+    >
         <v-list>
             <v-list-item
                 title="Task Management"
+                prepend-icon="mdi-check-circle-outline"
             />
 
             <v-divider />
