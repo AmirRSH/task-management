@@ -1,0 +1,41 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "Amir Hossein",
+            "email": "amir@example.com"
+        },
+        {
+            "id": 2,
+            "name": "John Doe",
+            "email": "john@example.com"
+        },
+        {
+            "id": 3,
+            "name": "Jane Smith",
+            "email": "jane@example.com"
+        }
+    ],
+    "tasks": [
+        {
+            "id": 1,
+            "title": "Learn Vue Router",
+            "description": "Practice nested and dynamic routes",
+            "type": "task",
+            "status": "open",
+            "priority": "high",
+            "assigneeId": 1,
+            "createdAt": "2026-08-07"
+        },
+        {
+            "id": 2,
+            "title": "Read documentation",
+            "description": "Review Vue documentation",
+            "type": "todo",
+            "status": "in-progress",
+            "priority": "medium",
+            "assigneeId": null,
+            "createdAt": "2026-08-07"
+        }
+    ]
+}
