@@ -1,7 +1,8 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch , onMounted  } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '@/stores/task'
+import { useUserStore } from '@/stores/user'
 
 const props = defineProps({
     task: {
@@ -12,6 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits(['updated', 'cancel'])
 
+const assigneeId = ref(props.task?.assigneeId ?? null)
 const router = useRouter()
 const taskStore = useTaskStore()
 
@@ -20,7 +22,11 @@ const description = ref('')
 const type = ref('task')
 const status = ref('open')
 const priority = ref('medium')
+const userStore = useUserStore()
 
+onMounted(() => {
+    userStore.fetchUsers()
+})
 const resetForm = () => {
     title.value = ''
     description.value = ''
@@ -56,6 +62,7 @@ const handleSubmit = () => {
         type: type.value,
         status: status.value,
         priority: priority.value,
+        assigneeId: assigneeId.value,
     }
 
     if (props.task) {
@@ -84,6 +91,11 @@ const handleCancel = () => {
 
     router.back()
 }
+watch(type, (newType) => {
+    if (newType === 'todo') {
+        assigneeId.value = null
+    }
+})
 </script>
 
 <template>
@@ -99,7 +111,16 @@ const handleCancel = () => {
                     label="Title"
                     variant="outlined"
                 />
-
+                <v-select
+                    v-if="type === 'task'"
+                    v-model="assigneeId"
+                    label="Assignee"
+                    variant="outlined"
+                    :items="userStore.users"
+                    item-title="name"
+                    item-value="id"
+                    clearable
+                />
                 <v-textarea
                     v-model="description"
                     label="Description"

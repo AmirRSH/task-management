@@ -1,10 +1,15 @@
 <script setup>
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '@/stores/task'
 import TaskCard from '@/components/task/TaskCard.vue'
 
 const router = useRouter()
 const taskStore = useTaskStore()
+
+onMounted(() => {
+    taskStore.fetchTasks()
+})
 </script>
 
 <template>

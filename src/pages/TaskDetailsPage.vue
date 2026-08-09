@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTaskStore } from '@/stores/task'
 import TaskDetails from '@/components/task/TaskDetails.vue'
@@ -11,9 +11,13 @@ const taskStore = useTaskStore()
 
 const isEditing = ref(false)
 
+onMounted(() => {
+    taskStore.fetchTasks()
+})
+
 const task = computed(() => {
     return taskStore.tasks.find(
-        task => task.id === Number(route.params.id)
+        task => String(task.id) === String(route.params.id)
     )
 })
 

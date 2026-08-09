@@ -1,59 +1,95 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useTaskStore = defineStore('task', () => {
-    const tasks = ref([
-        {
-            id: 1,
-            title: 'Learn Vue Router',
-            description: 'Practice nested and dynamic routes',
-            type: 'task',
-            status: 'open',
-            priority: 'high',
-            createdAt: '2026-08-07',
-        },
-        {
-            id: 2,
-            title: 'Read documentation',
-            description: 'Review Vue documentation',
-            type: 'todo',
-            status: 'in-progress',
-            priority: 'medium',
-            createdAt: '2026-08-07',
-        },
-    ])
+const API_URL = 'http://localhost:3000/tasks'
 
-    const addTask = (task) => {
-        tasks.value.push({
-            id: Date.now(),
-            ...task,
-        })
+export const useTaskStore = defineStore('task', () => {
+    const tasks = ref([])
+    const isLoading = ref(false)
+    const error = ref(null)
+
+    const fetchTasks = async () => {
+        isLoading.value = true
+        error.value = null
+
+        try {
+            const response = await fetch(API_URL)
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch tasks')
+            }
+
+            tasks.value = await response.json()
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            isLoading.value = false
+        }
     }
 
-    const removeTask = (id) => {
+    const addTask = async (task) => {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(task),
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to add task')
+        }
+
+        const newTask = await response.json()
+
+        tasks.value.push(newTask)
+    }
+
+    const updateTask = async (id, taskData) => {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(taskData),
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to update task')
+        }
+
+        const updatedTask = await response.json()
+
         const index = tasks.value.findIndex(
             task => task.id === id
         )
 
         if (index !== -1) {
-            tasks.value.splice(index, 1)
+            tasks.value[index] = updatedTask
         }
     }
 
-    const updateTask = (id, updates) => {
-        const task = tasks.value.find(
-            task => task.id === id
-        )
+    const removeTask = async (id) => {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+        })
 
-        if (task) {
-            Object.assign(task, updates)
+        if (!response.ok) {
+            throw new Error('Failed to delete task')
         }
+
+        tasks.value = tasks.value.filter(
+            task => task.id !== id
+        )
     }
 
     return {
         tasks,
+        isLoading,
+        error,
+        fetchTasks,
         addTask,
-        removeTask,
         updateTask,
+        removeTask,
     }
 })
