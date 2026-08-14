@@ -27,10 +27,33 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
+    const addUser = async (userData) => {
+        error.value = null
+
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to create user')
+        }
+
+        const newUser = await response.json()
+
+        users.value.push(newUser)
+
+        return newUser
+    }
+
     return {
         users,
         isLoading,
         error,
         fetchUsers,
+        addUser,
     }
 })
