@@ -1,5 +1,63 @@
-# Vue 3 + Vite
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+````md
+# Task Management
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+A task management application built with Vue 3.
+
+## Features
+
+- Login and Sign Up
+- Create, update and delete tasks
+- Task and Todo types
+- Task status and priority
+- Assign tasks to users
+- Task details
+- Responsive UI
+
+## Tech Stack
+
+- Vue 3
+- Vue Router
+- Pinia
+- Vuetify
+- Tailwind CSS
+- JSON Server
+
+## Getting Started
+
+### Install dependencies
+
+```bash
+npm install
+````
+
+### Start the development server
+
+```bash
+npm run dev
+```
+
+### Start JSON Server
+
+```bash
+npm run api
+```
+
+The API will run on:
+
+[http://localhost:3000](http://localhost:3000)
+
+## Demo Account
+
+Email: [amir@example.test](mailto:amir@example.test)
+Password: 123456
+
+> The demo account is for development and testing purposes only.
+
+## Roadmap
+
+* [ ] Add tests with Vitest
+* [ ] Add Persian / RTL support
+* [ ] Add Dark Mode
+* [ ] Improve UI and UX
+
