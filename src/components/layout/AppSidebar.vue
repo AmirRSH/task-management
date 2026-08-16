@@ -43,6 +43,7 @@ const navigationItems = [
                 :to="item.to"
                 :prepend-icon="item.icon"
                 :title="item.title"
+                exact
             />
         </v-list>
     </v-navigation-drawer>
