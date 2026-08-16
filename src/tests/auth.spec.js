@@ -74,6 +74,26 @@ describe('Auth Store', () => {
         expect(authStore.user).toBeNull()
         expect(localStorage.getItem('user')).toBeNull()
     })
-    
+    it('login : wrong email ', async ()=>{
+        const mockUser = {
+            id: '1',
+            name: 'AmirRSH',
+            email: 'amir@example.test',
+            password: '123456',
+        }
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => [mockUser],
+        })
+        const authStore = useAuthStore()
+        await expect(
+            authStore.login(
+                'amirrrrr@example.test',
+                '123456'
+            )
+        ).rejects.toThrow('Invalid email or password')
+        expect(authStore.user).toBeNull()
+        expect(localStorage.getItem('user')).toBeNull()
+    })
 
  })
