@@ -14,7 +14,7 @@ const openTasks = computed(() => {
 
 const inProgressTasks = computed(() => {
     return taskStore.tasks.filter(
-        task => task.status === 'in progress'
+        task => task.status === 'in-progress'
     ).length
 })
 
