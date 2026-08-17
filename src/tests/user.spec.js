@@ -38,5 +38,27 @@ describe('User Store', ()=> {
         expect(userStore.error).toBe('Failed to fetch users')
         expect(userStore.isLoading).toBe(false)
     })
+    it('sets loading while fetching users', async () => {
+        let resolveFetch
+        
+        const pendingFetch = new Promise((resolve) => {
+            resolveFetch = resolve
+        })
+    
+        global.fetch = vi.fn().mockReturnValue(pendingFetch)
+    
+        const userStore = useUserStore()
+        const fetchPromise = userStore.fetchUsers()
+        expect(userStore.isLoading).toBe(true)
+
+        resolveFetch({
+            ok: true,
+            json: async () => []
+        })
+
+        await fetchPromise
+        expect(userStore.isLoading).toBe(false)
+    })
+    
 
 })
