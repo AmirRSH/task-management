@@ -28,6 +28,15 @@ describe('User Store', ()=> {
         await userStore.fetchUsers()
         expect(userStore.users).toEqual(mockUser)
     })
-
+    it('handles fetch users error', async () => {
+        const mockUser = []
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+        })
+        const userStore = useUserStore();
+        await userStore.fetchUsers()
+        expect(userStore.error).toBe('Failed to fetch users')
+        expect(userStore.isLoading).toBe(false)
+    })
 
 })
