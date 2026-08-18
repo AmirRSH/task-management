@@ -99,5 +99,20 @@ describe('User Store', ()=> {
             })
         )
     })
+    it('handles add user error', async ()=>{
+        const userData = {
+            name: 'AmirRSH',
+            email: 'amir@example.test',
+            password: '123456',
+        }
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+        })
+        const userStore = useUserStore()
+
+        await expect(
+            userStore.addUser(userData)
+        ).rejects.toThrow('Failed to create user')
+    })
 
 })
