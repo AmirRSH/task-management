@@ -59,6 +59,45 @@ describe('User Store', ()=> {
         await fetchPromise
         expect(userStore.isLoading).toBe(false)
     })
-    
+    it('adds user successfully', async ()=>{
+        const userData = {
+            name: 'AmirRSH',
+            email: 'amir@example.test',
+            password: '123456',
+        }
+        const mockCreatedUser = {
+            id: '4',
+            ...userData,
+        }
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => mockCreatedUser,
+        })
+
+        const userStore = useUserStore()
+        const createdUser = await userStore.addUser(userData)
+        expect(userStore.users).toContainEqual(mockCreatedUser)
+        expect(createdUser).toEqual(mockCreatedUser)
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/users',
+            expect.objectContaining({
+                method: 'POST',
+            })
+        )
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/users',
+            expect.objectContaining({
+                body: JSON.stringify(userData),
+            })
+        )
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/users',
+            expect.objectContaining({
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+        )
+    })
 
 })
