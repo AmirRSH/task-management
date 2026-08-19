@@ -206,4 +206,15 @@ describe('Task Store', ()=>{
             })
         )
     })
+    it('handles remove task error', async () => {
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+        })
+    
+        const taskStore = useTaskStore()
+    
+        await expect(
+            taskStore.removeTask('1')
+        ).rejects.toThrow('Failed to delete task')
+    })
 })
