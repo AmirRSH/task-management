@@ -100,4 +100,61 @@ describe('Task Store', ()=>{
         ).rejects.toThrow('Failed to add task')
         expect(taskStore.tasks).toEqual([])
     })
+    it('updates task successfully' , async ()=>{
+        const existingTasks = [
+            {
+                id: '1',
+                title: 'Learn Vue',
+                description: 'Practice Vue',
+                status: 'open',
+                priority: 'medium',
+            },
+            {
+                id: '2',
+                title: 'Read docs',
+                description: 'Read documentation',
+                status: 'open',
+                priority: 'low',
+            },
+        ]
+        const taskData = {
+            title: 'Learn Vitest',
+            status: 'done',
+            priority: 'high',
+        }
+        const updatedTask = {
+            ...existingTasks[0],
+            ...taskData,
+        }
+        const taskStore = useTaskStore()
+        taskStore.tasks = existingTasks
+
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => updatedTask,
+        })
+        await taskStore.updateTask('1', taskData)
+        expect(taskStore.tasks[0]).toEqual(updatedTask)
+        expect(taskStore.tasks[1]).toEqual(existingTasks[1])
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/tasks/1',
+            expect.objectContaining({
+                method: 'PATCH',
+            })
+        )
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/tasks/1',
+            expect.objectContaining({
+                body: JSON.stringify(taskData),
+            })
+        )
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/tasks/1',
+            expect.objectContaining({
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+        )
+    })
 })
