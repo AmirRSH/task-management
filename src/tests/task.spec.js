@@ -174,4 +174,36 @@ describe('Task Store', ()=>{
             taskStore.updateTask('1', taskData)
         ).rejects.toThrow('Failed to update task')
     })
+    it('removes task successfully', async () => {
+        const existingTasks = [
+            {
+                id: '1',
+                title: 'Learn Vue',
+                description: 'Practice Vue',
+                status: 'open',
+            },
+            {
+                id: '2',
+                title: 'Read docs',
+                description: 'Read documentation',
+                status: 'done',
+            },
+        ]
+
+        const taskStore = useTaskStore()
+        taskStore.tasks = existingTasks
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+        })
+        await taskStore.removeTask('1')
+        expect(taskStore.tasks).toEqual([
+            existingTasks[1],
+        ])
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/tasks/1',
+            expect.objectContaining({
+                method: 'DELETE',
+            })
+        )
+    })
 })
