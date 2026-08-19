@@ -31,4 +31,14 @@ describe('Task Store', ()=>{
         await taskStore.fetchTasks()
         expect(taskStore.tasks).toEqual(mockTasks)
     })
+    it('handles fetch tasks error' , async ()=>{
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false, 
+        })
+
+        const taskStore = useTaskStore()
+        await taskStore.fetchTasks()
+        expect(taskStore.error).toBe('Failed to fetch tasks')
+        expect(taskStore.isLoading).toBe(false)
+    })
 })
