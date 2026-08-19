@@ -57,9 +57,10 @@ describe('Task Store', ()=>{
             ok: true,
             json: async () => mockCreatedTask,
         })
-        const taskStore = useTaskStore()
 
+        const taskStore = useTaskStore()
         await taskStore.addTask(taskData)
+
         expect(taskStore.tasks).toContainEqual(mockCreatedTask)
         expect(global.fetch).toHaveBeenCalledWith(
             'http://localhost:3000/tasks',
@@ -81,5 +82,22 @@ describe('Task Store', ()=>{
                 },
             })
         )
+    })
+    it('handles add task error' , async ()=>{
+        const taskData = {
+            title: 'Learn Vitest',
+            description: 'Write tests for task store',
+            type: 'task',
+            status: 'open',
+            priority: 'high',
+        }
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+        })
+        const taskStore = useTaskStore()
+        await expect(
+            taskStore.addTask(taskData)
+        ).rejects.toThrow('Failed to add task')
+        expect(taskStore.tasks).toEqual([])
     })
 })
