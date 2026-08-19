@@ -41,4 +41,45 @@ describe('Task Store', ()=>{
         expect(taskStore.error).toBe('Failed to fetch tasks')
         expect(taskStore.isLoading).toBe(false)
     })
+    it('adds task successfully', async ()=>{
+        const taskData = {
+            title: 'Learn Vitest',
+            description: 'Write tests for task store',
+            type: 'task',
+            status: 'open',
+            priority: 'high',
+        }
+        const mockCreatedTask = {
+            id: '3',
+            ...taskData,
+        }
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => mockCreatedTask,
+        })
+        const taskStore = useTaskStore()
+
+        await taskStore.addTask(taskData)
+        expect(taskStore.tasks).toContainEqual(mockCreatedTask)
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/tasks',
+            expect.objectContaining({
+                method: 'POST',
+            })
+        )
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/tasks',
+            expect.objectContaining({
+                body: JSON.stringify(taskData),
+            })
+        )
+        expect(global.fetch).toHaveBeenCalledWith(
+            'http://localhost:3000/tasks',
+            expect.objectContaining({
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+        )
+    })
 })
