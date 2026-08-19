@@ -157,4 +157,21 @@ describe('Task Store', ()=>{
             })
         )
     })
+    it('handles update task error', async () => {
+        const taskData = {
+            title: 'Learn Vitest',
+            status: 'done',
+            priority: 'high',
+        }
+
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+        })
+
+        const taskStore = useTaskStore()
+
+        await expect(
+            taskStore.updateTask('1', taskData)
+        ).rejects.toThrow('Failed to update task')
+    })
 })
