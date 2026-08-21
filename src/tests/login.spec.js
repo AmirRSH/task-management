@@ -70,5 +70,49 @@ describe('LoginPage', () => {
 
         expect(wrapper.text()).toContain('Login to your account')
     })
-
+    it('shows error when login fields are empty', async () => {
+        const wrapper = mount(LoginPage, {
+            global: {
+                plugins: [
+                    router,
+                    pinia,
+                ],
+                stubs: {
+                    VContainer: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCard: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardTitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardSubtitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardText: {
+                        template: '<div><slot /></div>',
+                    },
+                    VAlert: {
+                        template: '<div><slot /></div>',
+                    },
+                    VTextField: {
+                        template: '<input />',
+                    },
+                    VBtn: {
+                        template: '<button @click="$emit(\'click\')"><slot /></button>',
+                    },
+                },
+            },
+        })
+    
+        const buttons = wrapper.findAll('button')
+    
+        await buttons[0].trigger('click')
+    
+        expect(wrapper.text()).toContain(
+            'Email and password are required'
+        )
+    })
+    
 })
