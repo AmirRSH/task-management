@@ -166,57 +166,125 @@ describe('LoginPage', () => {
         expect(inputs).toHaveLength(4)
     })
     it('shows error when signup fields are empty', async () => {
-    const wrapper = mount(LoginPage, {
-        global: {
-            plugins: [router, pinia],
+        const wrapper = mount(LoginPage, {
+            global: {
+                plugins: [router, pinia],
 
-            stubs: {
-                VContainer: {
-                    template: '<div><slot /></div>',
-                },
-                VCard: {
-                    template: '<div><slot /></div>',
-                },
-                VCardTitle: {
-                    template: '<div><slot /></div>',
-                },
-                VCardSubtitle: {
-                    template: '<div><slot /></div>',
-                },
-                VCardText: {
-                    template: '<div><slot /></div>',
-                },
-                VAlert: {
-                    template: '<div><slot /></div>',
-                },
-                VTextField: {
-                    template: '<input />',
-                },
-                VBtn: {
-                    emits: ['click'],
-                    template: `
-                        <button @click="$emit('click')">
-                            <slot />
-                        </button>
-                    `,
+                stubs: {
+                    VContainer: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCard: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardTitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardSubtitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardText: {
+                        template: '<div><slot /></div>',
+                    },
+                    VAlert: {
+                        template: '<div><slot /></div>',
+                    },
+                    VTextField: {
+                        template: '<input />',
+                    },
+                    VBtn: {
+                        emits: ['click'],
+                        template: `
+                            <button @click="$emit('click')">
+                                <slot />
+                            </button>
+                        `,
+                    },
                 },
             },
-        },
+        })
+
+        const signupButton = wrapper
+            .findAll('button')
+            .find(button => button.text() === 'Sign Up')
+
+        await signupButton.trigger('click')
+
+        const createAccountButton = wrapper
+            .findAll('button')
+            .find(button => button.text() === 'Create Account')
+
+        await createAccountButton.trigger('click')
+
+        expect(wrapper.text()).toContain('All fields are required')
     })
 
-    const signupButton = wrapper
-        .findAll('button')
-        .find(button => button.text() === 'Sign Up')
+    it('shows error when passwords do not match', async () => {
+        const wrapper = mount(LoginPage, {
+            global: {
+                plugins: [router, pinia],
 
-    await signupButton.trigger('click')
+                stubs: {
+                    VContainer: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCard: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardTitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardSubtitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardText: {
+                        template: '<div><slot /></div>',
+                    },
+                    VAlert: {
+                        template: '<div><slot /></div>',
+                    },
+                    VTextField: {
+                        props: ['modelValue'],
+                        emits: ['update:modelValue'],
+                        template: `
+                            <input
+                                :value="modelValue"
+                                @input="$emit('update:modelValue', $event.target.value)"
+                            />
+                        `,
+                    },
+                    VBtn: {
+                        emits: ['click'],
+                        template: `
+                            <button @click="$emit('click')">
+                                <slot />
+                            </button>
+                        `,
+                    },
+                },
+            },
+        })
 
-    const createAccountButton = wrapper
-        .findAll('button')
-        .find(button => button.text() === 'Create Account')
+        const signupButton = wrapper
+            .findAll('button')
+            .find(button => button.text() === 'Sign Up')
 
-    await createAccountButton.trigger('click')
+        await signupButton.trigger('click')
 
-    expect(wrapper.text()).toContain('All fields are required')
-})
+        const inputs = wrapper.findAll('input')
+
+        await inputs[0].setValue('Amir')
+        await inputs[1].setValue('amir@example.com')
+        await inputs[2].setValue('123456')
+        await inputs[3].setValue('654321')
+
+        const createAccountButton = wrapper
+            .findAll('button')
+            .find(button => button.text() === 'Create Account')
+
+        await createAccountButton.trigger('click')
+
+        expect(wrapper.text()).toContain('Passwords do not match')
+    })
     
 })
