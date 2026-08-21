@@ -114,5 +114,56 @@ describe('LoginPage', () => {
             'Email and password are required'
         )
     })
+    it('switches to signup mode', async () => {
+        const wrapper = mount(LoginPage, {
+            global: {
+                plugins: [router, pinia],
+            
+                stubs: {
+                    VContainer: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCard: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardTitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardSubtitle: {
+                        template: '<div><slot /></div>',
+                    },
+                    VCardText: {
+                        template: '<div><slot /></div>',
+                    },
+                    VAlert: {
+                        template: '<div><slot /></div>',
+                    },
+                    VTextField: {
+                        template: '<input />',
+                    },
+                    VBtn: {
+                        emits: ['click'],
+                        template: `
+                            <button @click="$emit('click')">
+                                <slot />
+                            </button>
+                        `,
+                    },
+                },
+            },
+        })
+    
+        const signupButton = wrapper
+            .findAll('button')
+            .find(button => button.text() === 'Sign Up')
+    
+        await signupButton.trigger('click')
+    
+        expect(wrapper.text()).toContain('Create your account')
+    
+        const inputs = wrapper.findAll('input')
+    
+        expect(inputs).toHaveLength(4)
+    })
     
 })
